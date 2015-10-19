@@ -1,0 +1,6 @@
+#encrypting the following with git-crypt
+#via https://github.com/AGWA/git-crypt
+# make sure these rules are in place BEFORE adding the files
+
+/bin/data/auth.json filter=git-crypt diff=git-crypt
+*.key filter=git-crypt diff=git-crypt
