@@ -621,7 +621,7 @@ void ofApp::JsonInit(bool _isJsonMade, bool _areVarsInitiated){
         strcpy(cmd, command1);
         strcat(cmd, email);
         strcat(cmd, command2);
-        strcat(cmd, "poop");
+        strcat(cmd, pass);
         strcat(cmd, command3);
         
 //        cout << cmd << endl << endl;
@@ -638,7 +638,7 @@ void ofApp::JsonInit(bool _isJsonMade, bool _areVarsInitiated){
         
         // ---------- running the curl command and fetching the data
         
-//        system(cmd);
+        system(cmd);
     
         cout << "Data retrieval finished. " << endl << "Stored at ~/Documents/of_v0.8.3_osx_release/apps/satellites/satellites3/bin/data/spaceTrackQuery.json" << endl;
         
