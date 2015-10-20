@@ -277,6 +277,7 @@ void ofApp::draw(){
     
     if(ofGetElapsedTimef() >= 5 && !areVarsInitiated){
 //        ofDrawBitmapString(ofToString(status),center.x,200, 1);
+        
         JsonInit(isJsonMade, areVarsInitiated);
         
         cout << "areVarsInitiated = " << areVarsInitiated << endl;
@@ -578,6 +579,7 @@ void ofApp::draw(){
 void ofApp::JsonInit(bool _isJsonMade, bool _areVarsInitiated){
     
     if(!_isJsonMade){
+        
         cout << "Retrieving satellite data from interwebs and saving it to local file as JSON" << endl << endl;
         
 //        curl.setURL("https://www.space-track.org/ajaxauth/login");
@@ -588,7 +590,43 @@ void ofApp::JsonInit(bool _isJsonMade, bool _areVarsInitiated){
 //        
 //        curl.setURL("https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/OBJECT_ID/format/json");
         
-        char command[] = "curl -c cookies.txt -b cookies.txt -k https://www.space-track.org/ajaxauth/login -d 'identity=mapsat2015@gmail.com&password=kpeHmKY8pPXx4nHW&query=https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/OBJECT_ID/format/json' > ~/Documents/of_v0.8.3_osx_release/apps/satellites/satellites3/bin/data/spaceTrackQuery.json";
+//        char command[] = "curl -c cookies.txt -b cookies.txt -k https://www.space-track.org/ajaxauth/login -d 'identity=[email]&password=[pass]&query=https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/OBJECT_ID/format/json' > ~/Documents/of_v0.8.3_osx_release/apps/satellites/satellites3/bin/data/spaceTrackQuery.json";
+        
+        // ---------- building curl command
+        
+        // opening json file containing API auth info
+        string authFile = "auth.json";
+        auth.open(authFile);
+        
+        //building all the pieces of the curl command
+        char command1[] = "curl -c cookies.txt -b cookies.txt -k https://www.space-track.org/ajaxauth/login -d \'identity=";
+        
+        string emailStr = auth["email"].asString(); //extracting email from file and converting to char[]
+        char email[21];
+        strncpy(email, emailStr.c_str(), sizeof(email));
+        email[sizeof(email) - 1] = 0;
+        
+        char command2[] = "&password=";
+        
+        const string passStr = auth["password"].asString(); //extracting pw from file and converting to char[]
+        char pass[17];
+        strncpy(pass, passStr.c_str(), sizeof(pass));
+        pass[sizeof(pass) - 1] = 0;
+        
+        char command3[] = "&query=https://www.space-track.org/basicspacedata/query/class/tle_latest/ORDINAL/1/EPOCH/%3Enow-30/orderby/OBJECT_ID/format/json' > ~/Documents/of_v0.8.3_osx_release/apps/satellites/satellites3/bin/data/spaceTrackQuery.json";
+        
+        //summing the size of the final "master" char array and putting all the pieces into it
+        int size = sizeof(command1) + sizeof(email) + sizeof(command2) + sizeof(pass) + sizeof(command3) + 1;
+        char cmd[size];
+        strcpy(cmd, command1);
+        strcat(cmd, email);
+        strcat(cmd, command2);
+        strcat(cmd, "poop");
+        strcat(cmd, command3);
+        
+//        cout << cmd << endl << endl;
+        
+        // ---------- curl command info
         
         //-c = --cookie-jar <filename> = Specify to which local file you want curl to write all cookies after a completed operation. Curl writes all cookies previously read from a specified file as well as all cookies received from remote server(s). If no cookies are known, no data will be written.
         
@@ -598,12 +636,13 @@ void ofApp::JsonInit(bool _isJsonMade, bool _areVarsInitiated){
         
         //-d = --data-ascii = Sends the specified data in a POST request to the HTTP server (like hitting submit button)
         
-        system( command );
+        // ---------- running the curl command and fetching the data
         
-//        cout << "STATUS = " << status << endl << endl;
+//        system(cmd);
+    
         cout << "Data retrieval finished. " << endl << "Stored at ~/Documents/of_v0.8.3_osx_release/apps/satellites/satellites3/bin/data/spaceTrackQuery.json" << endl;
         
-        //---------- Retrieving locally saved JSON file
+        //---------- Retrieving the data from locally saved JSON file
         
         std::string file = "spaceTrackQuery.json";
         

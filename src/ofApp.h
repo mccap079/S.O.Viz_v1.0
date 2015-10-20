@@ -40,7 +40,7 @@ public:
     
 //    ofxSSL curl;
 //    ofxCurl curl2;
-    ofxJSONElement result;
+    ofxJSONElement auth, result;
     ofxUISuperCanvas *gui;
     ofxTileSaver saver;
     ofxTween tweenOpen;
